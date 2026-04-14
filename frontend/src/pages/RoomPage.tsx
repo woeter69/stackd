@@ -155,13 +155,19 @@ export default function RoomPage() {
       {/* ── Game Board Area ──────────────────────────────────────────────── */}
       <main className="flex-1 p-4 overflow-y-auto flex flex-col items-center justify-center">
         <div className="w-full max-w-4xl" ref={tableRef}>
-          <TableBoard
-            ref={boardRef}
-            room={state?.room!}
-            players={players}
-            myId={myId}
-            isBaccarat={state?.room?.gameType === 'baccarat'}
-          />
+          {state?.room ? (
+            <TableBoard
+              ref={boardRef}
+              room={state.room}
+              players={players}
+              myId={myId}
+              isBaccarat={state.room.gameType === 'baccarat'}
+            />
+          ) : (
+            <div className="flex items-center justify-center h-64 text-slate-400">
+              Loading table...
+            </div>
+          )}
         </div>
 
         {/* Banker Mint Panel */}
