@@ -1,6 +1,7 @@
 import { useRef, useImperativeHandle, forwardRef } from 'react'
 import { Crown, User2 } from 'lucide-react'
 import Chip from './Chip'
+import PlayingCard from './PlayingCard'
 import { CHIP_DENOMINATIONS, type ChipValue, type Player, type Room } from '../types'
 
 export interface TableBoardHandle {
@@ -82,6 +83,8 @@ const TableBoard = forwardRef<TableBoardHandle, Props>(function TableBoard(
     getPotEl: () => potRef.current,
   }))
 
+  const isPoker = room.gameType === 'poker'
+
   return (
     <div
       className="relative w-full"
@@ -115,12 +118,27 @@ const TableBoard = forwardRef<TableBoardHandle, Props>(function TableBoard(
         )}
       </svg>
 
+      {/* ── Community Cards (Poker) ── */}
+      {isPoker && (
+        <div 
+          className="absolute z-10 flex gap-1 items-center justify-center w-full"
+          style={{ top: '35%', left: '50%', transform: 'translate(-50%, -50%)' }}
+        >
+          {/* Placeholders for community cards */}
+          <div className="w-8 h-12 md:w-10 md:h-14 rounded border-2 border-emerald-600/30 bg-emerald-800/20 m-0.5" />
+          <div className="w-8 h-12 md:w-10 md:h-14 rounded border-2 border-emerald-600/30 bg-emerald-800/20 m-0.5" />
+          <div className="w-8 h-12 md:w-10 md:h-14 rounded border-2 border-emerald-600/30 bg-emerald-800/20 m-0.5" />
+          <div className="w-8 h-12 md:w-10 md:h-14 rounded border-2 border-emerald-600/30 bg-emerald-800/20 m-0.5" />
+          <div className="w-8 h-12 md:w-10 md:h-14 rounded border-2 border-emerald-600/30 bg-emerald-800/20 m-0.5" />
+        </div>
+      )}
+
       {/* ── Pot zone (center) ── */}
       <div
         ref={(el) => { potRef.current = el }}
         className="absolute z-10 flex flex-col items-center justify-center gap-1"
         style={{
-          left: '50%', top: '50%',
+          left: '50%', top: '55%',
           transform: 'translate(-50%, -50%)',
           minWidth: 90, minHeight: 70,
         }}
@@ -148,9 +166,21 @@ const TableBoard = forwardRef<TableBoardHandle, Props>(function TableBoard(
             className={`absolute z-20 flex flex-col items-center gap-1 cursor-default select-none`}
             style={{ left: pos.left, top: pos.top, transform: pos.transform }}
           >
+            {/* Hole Cards (Poker) */}
+            {isPoker && (
+              <div className="flex -mb-4 z-0 opacity-90 scale-90">
+                <div className="transform -rotate-6 translate-x-2">
+                  <PlayingCard faceUp={false} />
+                </div>
+                <div className="transform rotate-6 -translate-x-2">
+                  <PlayingCard faceUp={false} />
+                </div>
+              </div>
+            )}
+
             {/* Avatar bubble */}
             <div
-              className={`w-11 h-11 rounded-full border-2 flex items-center justify-center shadow-lg transition-all ${
+              className={`w-11 h-11 rounded-full border-2 flex items-center justify-center shadow-lg transition-all z-10 ${
                 isMe
                   ? 'bg-emerald-700 border-emerald-400 ring-2 ring-emerald-400/40'
                   : isDealer
@@ -166,7 +196,7 @@ const TableBoard = forwardRef<TableBoardHandle, Props>(function TableBoard(
 
             {/* Name + balance card */}
             <div
-              className={`rounded-lg px-2 py-1 text-center shadow-xl backdrop-blur-sm border text-[10px] ${
+              className={`rounded-lg px-2 py-1 text-center shadow-xl backdrop-blur-sm border text-[10px] z-10 ${
                 isMe
                   ? 'bg-emerald-900/80 border-emerald-600/50 text-emerald-100'
                   : isDealer
